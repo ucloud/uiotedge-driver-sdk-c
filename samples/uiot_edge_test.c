@@ -29,6 +29,8 @@ int main(int argc, char **argv)
     char *topic_str = NULL;
     struct timeval stamp;
     char *time_stamp = malloc(100);
+    const char *switch_str[2] = {"on", "off"};
+    int loop = 0;
     
     status = edge_common_init();
     if(EDGE_OK != status)
@@ -53,9 +55,9 @@ int main(int argc, char **argv)
     /* 
     {
         "period": 10,
-        "topic_config": {
-            "auth": "pub",
-            "topic": "/%s/%s/upload"
+        "msg_config": {
+            "topic": "/%s/%s/upload",
+            "param_name": "relay_status"
         }
     }
     */
@@ -73,14 +75,16 @@ int main(int argc, char **argv)
     }
     
     // 解析配置取出topic_config下的topic
-    cJSON *config_item = cJSON_GetObjectItem(dirver_info_cfg, "topic_config");
+    cJSON *config_item = cJSON_GetObjectItem(dirver_info_cfg, "msg_config");
     cJSON *topic_format_json = cJSON_GetObjectItem(config_item, "topic");    
+    cJSON *topic_param_name_json = cJSON_GetObjectItem(config_item, "param_name");    
 
     // 解析设备列表
     device_list_cfg = cJSON_Parse(edge_get_device_info());    
     if (!device_list_cfg) 
     {
         log_write(LOG_ERROR, "edge_get_device_list parse error: [%s]",cJSON_GetErrorPtr());
+        cJSON_Delete(dirver_info_cfg);
         return EDGE_ERR;
     }
 
@@ -93,7 +97,7 @@ int main(int argc, char **argv)
         // 组成发送消息topic
         topic_str = (char *)malloc(100);
         if(NULL == topic_str)
-            return EDGE_ERR;
+            goto end;
         memset(topic_str, 0, 100);
         if(NULL != topic_format_json)
         {
@@ -109,12 +113,12 @@ int main(int argc, char **argv)
         if(NULL == subdevClient)
         {
             log_write(LOG_ERROR, "edge construct fail!");
-            return EDGE_ERR;
+            goto end;
         }
 
         #if 0
         // 动态注册一个子设备
-        status = edge_subdev_dynamic_auth(subdevClient, "product_secret", 5000);
+        status = edge_subdev_dynamic_auth(subdevClient, "produce_secret", 5000);
         if(EDGE_OK != status)
         {
             printf("edge dynamic auth fail!");
@@ -127,7 +131,7 @@ int main(int argc, char **argv)
         if(EDGE_OK != status)
         {
             log_write(LOG_ERROR, "edge_add_topo fail");
-            return EDGE_ERR;
+            goto end;
         }
 
         // 查看拓扑
@@ -142,7 +146,7 @@ int main(int argc, char **argv)
         if(EDGE_OK != status)
         {
             log_write(LOG_ERROR, "edge_subdev_login fail");
-            return EDGE_ERR;
+            goto end;
         }
     } 
     
@@ -150,19 +154,23 @@ int main(int argc, char **argv)
     {            
         // 维持心跳,并周期发送消息
         sleep(upload_period);
-        //sleep(1000);
 
         gettimeofday(&stamp, NULL);
         memset(time_stamp, 0, 100);
-        snprintf(time_stamp, 100, "{\"timestamp\": \"%ld\"}", stamp.tv_sec);
+        snprintf(time_stamp, 100, "{\"timestamp\": \"%ld\", \"%s\": \"%s\"}", stamp.tv_sec, topic_param_name_json->valuestring, switch_str[loop++ % 2]);
         log_write(LOG_DEBUG, "send message[%s]", time_stamp);
         
         status = edge_publish(topic_str, time_stamp);
         if(EDGE_OK != status)
         {
             log_write(LOG_ERROR, "edge_publish fail");
-            return EDGE_ERR;
+            goto end;
         }
     }
+
+end:
+    cJSON_Delete(dirver_info_cfg);
+    cJSON_Delete(device_list_cfg);
+    return EDGE_ERR;
 }
 
