@@ -9,11 +9,11 @@ make
 ```
 
 ## 打包方式
-将uiot_edge_test.c改名为main，和依赖的动态链接库（如果有）一起打成zip的压缩包,将压缩包上传到子设备驱动
+将uiot_edge_test改名为main，和依赖的动态链接库（如果有）一起打成zip的压缩包,将压缩包上传到子设备驱动
 ```
 cd samples
 cp uiot_edge_test main
-zip -r main.zip main
+zip -r abc.zip main
 ```
 
 ## API参考文档
@@ -71,6 +71,7 @@ edge_status edge_subdev_dynamic_auth(subdev_client *pst_subdev_client, const cha
  *
  * @retval : 成功则返回EDGE_OK
  */
+ 
 edge_status edge_subdev_login_sync(subdev_client *pst_subdev_client, uint32_t time_out_ms)
 
 /**
@@ -81,6 +82,7 @@ edge_status edge_subdev_login_sync(subdev_client *pst_subdev_client, uint32_t ti
  *
  * @retval : 成功则返回EDGE_OK
  */
+ 
 edge_status edge_subdev_logout_sync(subdev_client *pst_subdev_client, uint32_t time_out_ms)
 
 /**
@@ -90,6 +92,7 @@ edge_status edge_subdev_logout_sync(subdev_client *pst_subdev_client, uint32_t t
  *
  * @retval : 成功则返回EDGE_OK
  */
+ 
 edge_status edge_subdev_login_async(subdev_client *pst_subdev_client)
 
 /**
@@ -99,6 +102,7 @@ edge_status edge_subdev_login_async(subdev_client *pst_subdev_client)
  *
  * @retval : 成功则返回EDGE_OK
  */
+ 
 edge_status edge_subdev_logout_async(subdev_client *pst_subdev_client)
 
 /**
@@ -193,6 +197,7 @@ edge_status edge_delete_topo(subdev_client *pst_subdev_client, uint32_t time_out
  *
  * @retval : 成功则返回EDGE_OK
  */
+ 
 edge_status edge_set_log(log_level level, uint32_t file_size_mb, uint32_t file_number)
 
 /**
