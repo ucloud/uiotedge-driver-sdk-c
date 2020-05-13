@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 
         #if 0
         // 动态注册一个子设备
-        status = edge_subdev_dynamic_auth(subdevClient, "produce_secret", 5000);
+        status = edge_subdev_dynamic_auth(subdevClient, "product_secret", 5000);
         if(EDGE_OK != status)
         {
             printf("edge dynamic auth fail!");
