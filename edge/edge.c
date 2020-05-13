@@ -506,7 +506,7 @@ edge_status edge_common_init(void)
     }
     else
     {
-        log_write(LOG_ERROR, "requestid_list malloc fail!");
+        printf("requestid_list malloc fail!\r\n");
         return EDGE_NO_MEMORY;
     }
     
@@ -523,7 +523,7 @@ edge_status edge_common_init(void)
     }
     else
     {
-        log_write(LOG_INFO, "conn_device_list malloc fail!");
+        printf("conn_device_list malloc fail!\r\n");
         return EDGE_NO_MEMORY;
     }
     
@@ -537,7 +537,7 @@ edge_status edge_common_init(void)
     status = natsConnection_ConnectTo(&conn, nats_server_url != NULL?nats_server_url:NATS_SERVER_DEFAULT_URL);
     if(EDGE_OK != status)
     {
-        log_write(LOG_ERROR, "connect nats fail!");
+        printf("connect nats fail!\r\n");
         return EDGE_PROTOCOL_ERROR;
     }
 
