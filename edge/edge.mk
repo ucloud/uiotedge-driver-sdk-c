@@ -1,6 +1,6 @@
 CFLAGS  = -g -Wall -O2
 
-EDGE_LIB     = edge_lib.a
+EDGE_LIB     = libedge.a
 
 INCLUDE_PATH =  -I$(PWD)
 INCLUDE      = $(INCLUDE_PATH)/build/cjson $(INCLUDE_PATH)/build/nats $(INCLUDE_PATH)/build/utils 

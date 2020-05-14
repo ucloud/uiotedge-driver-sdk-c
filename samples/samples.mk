@@ -1,7 +1,7 @@
 CFLAGS  = -g -Wall -O2 -lpthread
 
 INCLUDE = -I../build/cjson -I../build/nats -I../build/utils -I../build/edge
-LIBS    = ../build/edge/edge_lib.a ../build/nats/libnats_static.a ../build/utils/utils.a ../build/cjson/libcjson.a
+LIBS    = ../build/edge/libedge.a ../build/nats/libnats_static.a ../build/utils/libutils.a ../build/cjson/libcjson.a
 
 src    = uiot_edge_test.c
 target = uiot_edge_test

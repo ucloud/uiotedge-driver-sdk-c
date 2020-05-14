@@ -1,6 +1,6 @@
 CFLAGS  = -g -Wall -O2 -lpthread
 
-UTILS_LIB   = utils.a
+UTILS_LIB   = libutils.a
 
 INCLUDE     = -I$(PWD)
 
