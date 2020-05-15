@@ -93,9 +93,9 @@ int main(int argc, char **argv)
         upload_period = period->valueint;
     }
     
-    // 解析配置取出topic_config下的topic
+    // 解析配置取出msg_config下的topic
     cJSON *config_item = cJSON_GetObjectItem(dirver_info_cfg, "msg_config");
-    cJSON *topic_format_json = cJSON_GetObjectItem(config_item, "topic");    
+    cJSON *topic_format_json = cJSON_GetObjectItem(config_item, "topic");  
     cJSON *topic_param_name_json = cJSON_GetObjectItem(config_item, "param_name");    
 
     // 解析设备列表
@@ -160,7 +160,8 @@ int main(int argc, char **argv)
         }
 
         // 子设备登录
-        status = edge_subdev_login_async(subdevClient);
+        //status = edge_subdev_login_sync(subdevClient， 5000); 子设备登录同步接口，等待响应结果
+        status = edge_subdev_login_async(subdevClient);     //子设备登录异步接口，不等待响应结果
         if(EDGE_OK != status)
         {
             log_write(LOG_ERROR, "edge_subdev_login fail");
@@ -175,7 +176,14 @@ int main(int argc, char **argv)
 
         gettimeofday(&stamp, NULL);
         memset(time_stamp, 0, 512);
-        snprintf(time_stamp, 512, "{\"timestamp\": \"%ld\", \"%s\": \"%s\"}", stamp.tv_sec, topic_param_name_json->valuestring, switch_str[loop++ % 2]);
+        if(NULL != topic_param_name_json)
+        {
+            snprintf(time_stamp, 512, "{\"timestamp\": \"%ld\", \"%s\": \"%s\"}", stamp.tv_sec, topic_param_name_json->valuestring, switch_str[loop++ % 2]);
+        }
+        else
+        {
+            snprintf(time_stamp, 512, "{\"timestamp\": \"%ld\", \"%s\": \"%s\"}", stamp.tv_sec, "relay_status", switch_str[loop++ % 2]);
+        }
         log_write(LOG_DEBUG, "send message[%s]", time_stamp);
         
         status = edge_publish(topic_str, time_stamp);
