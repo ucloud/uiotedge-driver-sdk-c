@@ -125,7 +125,8 @@ int base64_encode(const char *indata, int inlen, char *outdata) {
     char *p = outdata; // 定义指针指向传出data的首地址
     
     //编码, 长度为调整后的长度, 3字节一组
-    for (int i = 0; i < in_len; i+=3) {
+    int i = 0;
+    for (i = 0; i < in_len; i+=3) {
         int value = *indata >> 2; // 将indata第一个字符向右移动2bit(丢弃2bit)
         char c = base64_alphabet[value]; // 对应base64转换表的字符
         *p = c; // 将对应字符(编码后字符)赋值给outdata第一字节
