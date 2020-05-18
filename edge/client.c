@@ -463,7 +463,7 @@ static void _replace_str(char *new_buf, char *data, char *rep, char *to)
 
 edge_status edge_set_log(log_level level, uint32_t file_size_mb, uint32_t file_number)
 {
-    if((level < LOG_DEBUG) || (level > LOG_CRITICAL))
+    if((level < LOG_DEBUG) || (level > LOG_ERROR))
     {
         return EDGE_INVALID_ARG;
     }
@@ -486,7 +486,7 @@ edge_status edge_set_log(log_level level, uint32_t file_size_mb, uint32_t file_n
 
 void log_write(log_level level, const char *format,...)
 {    
-    if((level < LOG_DEBUG) || (level > LOG_CRITICAL))
+    if((level < LOG_DEBUG) || (level > LOG_ERROR))
     {
         return;
     }

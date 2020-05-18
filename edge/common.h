@@ -67,7 +67,6 @@ typedef enum
     LOG_INFO,
     LOG_WARNING,
     LOG_ERROR,
-    LOG_CRITICAL,
 }log_level;
 
 uint32_t _gen_requestid(void);
