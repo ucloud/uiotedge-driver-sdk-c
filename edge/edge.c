@@ -12,6 +12,7 @@ char edge_router_subject[NATS_SUBJECT_MAX_LEN] = {0};
 char edge_local_subject[NATS_SUBJECT_MAX_LEN] = {0};
 static cJSON *driver_config_json = NULL;
 static char *driver_id = NULL;
+char *driver_name = NULL;
 static char *driver_info = NULL;
 static char *device_info = NULL;
 List *requestid_list;
@@ -68,27 +69,37 @@ static cJSON *_get_driver_cfg(void)
     return driver_config_json;
 }
 
-static char * _get_driver_id(void)
+static int _parse_driver_cfg(void)
 {
-    if(NULL == driver_id)
+    if(NULL == driver_id || NULL == driver_name)
     {
         if(NULL == _get_driver_cfg())
         {
-            log_write(LOG_ERROR, "_get_driver_cfg fail!");
-            return NULL;
+            log_print("_get_driver_cfg fail!\r\n");
+            return EDGE_ERR;
         }
         
         cJSON *driver_id_json = cJSON_GetObjectItem(_get_driver_cfg(), "driverID");
         if(NULL == driver_id_json)
         {
-            log_write(LOG_ERROR, "parse driverID fail!");
-            return NULL;
+            log_print("parse driverID fail!\r\n");
+            return EDGE_ERR;
+        }
+        driver_id = driver_id_json->valuestring;
+        log_print("driverId:%s\r\n", driver_id);   
+
+        cJSON *driver_name_json = cJSON_GetObjectItem(_get_driver_cfg(), "driverName");
+        if(NULL == driver_name_json)
+        {
+            log_print("parse driverName fail!\r\n");
+            return EDGE_ERR;
         }
 
-        driver_id = driver_id_json->valuestring;
-        log_write(LOG_DEBUG, "driverId:%s", driver_id);   
+        driver_name = driver_name_json->valuestring;
+        log_print("driverName:%s\r\n", driver_name);   
+        return EDGE_OK;
     }
-    return driver_id;
+    return EDGE_OK;
 }
 
 char * edge_get_driver_info(void)
@@ -202,7 +213,7 @@ static void _on_local_message(natsMsg *msg)
     ListNode *node_tmp = _find_in_list(conn_device_list, (void *)&subdev_client_tmp, conn_device_list_mutex);
     if(NULL == node_tmp)
     {
-        log_write(LOG_WARNING, "cannot find conn device[%s]", subdev_client_tmp.device_sn);
+        log_write(LOG_WARN, "cannot find conn device[%s]", subdev_client_tmp.device_sn);
         goto end;
     }
     pst_subdev_client = (subdev_client *)node_tmp->val;
@@ -286,7 +297,7 @@ static void _on_broadcast_message(natsMsg *msg)
         ListNode *node_tmp = _find_in_list(requestid_list, (void *)&msg_parse_tmp, requestid_list_mutex);
         if(NULL == node_tmp)
         {
-            log_write(LOG_WARNING, "cannot find msg request_id[%ld]", msg_parse_tmp.request_id);            
+            log_write(LOG_WARN, "cannot find msg request_id[%ld]", msg_parse_tmp.request_id);            
             goto end;
         }
         strncpy(((msg_parse *)node_tmp->val)->payload, msg_base64decode, NATS_MSG_MAX_LEN >= strlen(msg_base64decode)?strlen(msg_base64decode):NATS_MSG_MAX_LEN);
@@ -467,7 +478,7 @@ static void _handle_status_sync(int signo)
     }
     natsMutex_Unlock(conn_device_list_mutex);
 
-    snprintf(sync_msg, NATS_MSG_MAX_LEN, STATUS_SYNC_FORMAT, _get_driver_id(), device_list_msg);
+    snprintf(sync_msg, NATS_MSG_MAX_LEN, STATUS_SYNC_FORMAT, driver_id, device_list_msg);
     log_write(LOG_DEBUG, "sync_msg:%s",sync_msg);
     status = natsConnection_PublishString(conn, EDGE_STATE_REQ_SUBJECT, sync_msg);
     status |= natsConnection_Flush(conn);
@@ -506,7 +517,7 @@ edge_status edge_common_init(void)
     }
     else
     {
-        printf("requestid_list malloc fail!\r\n");
+        log_print("requestid_list malloc fail!\r\n");
         return EDGE_NO_MEMORY;
     }
     
@@ -523,7 +534,7 @@ edge_status edge_common_init(void)
     }
     else
     {
-        printf("conn_device_list malloc fail!\r\n");
+        log_print("conn_device_list malloc fail!\r\n");
         return EDGE_NO_MEMORY;
     }
     
@@ -537,19 +548,19 @@ edge_status edge_common_init(void)
     status = natsConnection_ConnectTo(&conn, nats_server_url != NULL?nats_server_url:NATS_SERVER_DEFAULT_URL);
     if(EDGE_OK != status)
     {
-        printf("connect nats fail!\r\n");
+        log_print("connect nats fail!\r\n");
         return EDGE_PROTOCOL_ERROR;
     }
 
-    if(NULL == _get_driver_id())
+    if(EDGE_ERR == _parse_driver_cfg())
     {
-        log_write(LOG_ERROR, "driver id is null!");
+        log_print("pasrse driver cfg fail!\r\n");
         return EDGE_ERR;
     }
 
-    snprintf(edge_router_subject, NATS_SUBJECT_MAX_LEN, EDGE_ROUTER_SUBJECT_FORMAT, _get_driver_id());
+    snprintf(edge_router_subject, NATS_SUBJECT_MAX_LEN, EDGE_ROUTER_SUBJECT_FORMAT, driver_id);
     log_write(LOG_DEBUG, "edge_router_subject:%s",edge_router_subject);
-    snprintf(edge_local_subject, NATS_SUBJECT_MAX_LEN, EDGE_LOCAL_SUBJECT_FORMAT, _get_driver_id());
+    snprintf(edge_local_subject, NATS_SUBJECT_MAX_LEN, EDGE_LOCAL_SUBJECT_FORMAT, driver_id);
     log_write(LOG_DEBUG, "edge_local_subject:%s",edge_local_subject);
     
     //sub edge.local.driverId

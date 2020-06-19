@@ -461,27 +461,18 @@ static void _replace_str(char *new_buf, char *data, char *rep, char *to)
     return;  
 }  
 
-edge_status edge_set_log(log_level level, uint32_t file_size_mb, uint32_t file_number)
+static int print_debug = 0;
+void log_print(const char *format,...)
 {
-    if((level < LOG_DEBUG) || (level > LOG_ERROR))
-    {
-        return EDGE_INVALID_ARG;
-    }
-    
-    edge_status status;    
-    const char *log_lev[5] = {"debug", "info", "warning", "error", "critical"};
-    char *log_msg = (char *)EDGE_MALLOC(NATS_MSG_MAX_LEN);
-    if(NULL == log_msg)
-    {
-        return EDGE_NO_MEMORY;
-    }
-    memset(log_msg, 0, NATS_MSG_MAX_LEN);
+    if(print_debug == 0)
+        return;
+    va_list args;
 
-    snprintf(log_msg, NATS_MSG_MAX_LEN, LOG_SET_FORMAT, log_lev[level], file_size_mb, file_number);
-    status = _publish_string(EDGE_LOG_SET_SUBJECT, log_msg);
+    va_start(args, format);
+    printf(format, args);
+    va_end(args);
 
-    EDGE_FREE(log_msg);
-    return status;
+    fflush(stdout);
 }
 
 void log_write(log_level level, const char *format,...)
@@ -490,7 +481,7 @@ void log_write(log_level level, const char *format,...)
     {
         return;
     }
-    const char *log_lev[5] = {"debug", "info", "warning", "error", "critical"};
+    const char *log_lev[5] = {"debug", "info", "warn", "error"};
     struct timeval stamp;
     char *msg_str_rep = (char *)EDGE_MALLOC(NATS_MSG_MAX_LEN);
     if(NULL == msg_str_rep)
@@ -524,9 +515,10 @@ void log_write(log_level level, const char *format,...)
 
     // 将json字段转换成字符串
     _replace_str(msg_str_rep, msg_str, "\"", "\\\"");
-    snprintf(log_msg, NATS_MSG_MAX_LEN, LOG_UPLOAD_FORMAT, "subdev_log", log_lev[level], msg_str_rep, stamp.tv_sec);
+    snprintf(log_msg, NATS_MSG_MAX_LEN, LOG_UPLOAD_FORMAT, driver_name, log_lev[level], msg_str_rep, stamp.tv_sec);
     
     _publish_string(EDGE_LOG_UPLOAD_SUBJECT, log_msg);
+    log_print(log_msg);
 
     EDGE_FREE(msg_str_rep);
     EDGE_FREE(msg_str);

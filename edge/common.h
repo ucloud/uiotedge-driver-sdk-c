@@ -46,6 +46,7 @@
 #define LOG_UPLOAD_FORMAT                   "{\"module\": \"%s\",\"level\": \"%s\",\"message\": \"%s\",\"timestamp\": %ld}"
 #define LOG_SET_FORMAT                      "{\"level\": \"%s\",\"size\": %d,\"number\": %d}"
 
+extern char *driver_name;
 extern natsConnection *conn;
 extern char edge_router_subject[];
 extern List *requestid_list;
@@ -65,7 +66,7 @@ typedef enum
 {
     LOG_DEBUG = 0,
     LOG_INFO,
-    LOG_WARNING,
+    LOG_WARN,
     LOG_ERROR,
 }log_level;
 
