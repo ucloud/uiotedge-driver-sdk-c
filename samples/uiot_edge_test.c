@@ -54,16 +54,6 @@ int main(int argc, char **argv)
         return EDGE_ERR;
     }
 
-    // 设置日志等级为INFO，每个日志大小5M，可以保存6个文件
-    status = edge_set_log(LOG_INFO, 5, 6);
-    if(EDGE_OK != status)
-    {
-        log_write(LOG_ERROR, "set log fail");
-        free(time_stamp);
-        free(topic_str);
-        return EDGE_ERR;
-    }
-
     edge_set_topo_notify_handle(edge_topo_notify_handler_user);
     
     edge_set_subdev_status_handle(edge_subdev_status_handler_user);
@@ -139,8 +129,8 @@ int main(int argc, char **argv)
         status = edge_subdev_dynamic_auth(subdevClient, "product_secret", 5000);
         if(EDGE_OK != status)
         {
-            printf("edge dynamic auth fail!");
-            return EDGE_ERR;
+            log_write(LOG_ERROR, "edge dynamic auth fail!");
+            goto end;
         }
         #endif
         

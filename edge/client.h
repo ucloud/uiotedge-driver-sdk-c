@@ -113,6 +113,8 @@ edge_status _wait_payload_is_timeout(msg_parse *msg_parse_str, uint32_t time_out
 
 edge_status _publish_string(const char *subj, const char *str);
 
+void log_print(const char *format,...);
+
 /**
  * @brief 初始化一个子设备
  *
@@ -185,20 +187,9 @@ edge_status edge_subdev_login_async(subdev_client *pst_subdev_client);
 edge_status edge_subdev_logout_async(subdev_client *pst_subdev_client);
 
 /**
- * @brief 设置日志记录等级，日志文件大小和文件个数（一天一个日志文件）
- *
- * @param level:        日志等级分为：DEBUG、INFO、WARNING、ERROR、RITICAL
- * @param file_size_mb: 单个日志文件大小
- * @param file_number:  日志文件个数
- *
- * @retval : 成功则返回EDGE_OK
- */
-edge_status edge_set_log(log_level level, uint32_t file_size_mb, uint32_t file_number);
-
-/**
  * @brief 记录日志
  *
- * @param level:        日志等级分为：DEBUG、INFO、WARNING、ERROR、RITICAL
+ * @param level:        日志等级分为：DEBUG、INFO、WARN、ERROR
  * @param format:       日志记录格式
  *
  * @retval : 成功则返回EDGE_OK

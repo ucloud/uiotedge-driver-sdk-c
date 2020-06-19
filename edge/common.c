@@ -16,7 +16,7 @@ natsStatus _add_to_list(List * list, void *node, natsMutex *mutex)
     ListNode *list_node = list_node_new(node);
     if (NULL == list_node) 
     {
-        printf("_add_to_list error!\n");
+        printf("_add_to_list error!\r\n");
         return NATS_ERR;
     }
     else
@@ -52,7 +52,7 @@ natsStatus _remove_from_list(List * list, void *node, natsMutex *mutex)
     list_node = list_find(list, node);
     if (NULL == list_node) 
     {
-        printf("_remove_from_list error!\n");
+        printf("_remove_from_list error!\r\n");
         status = NATS_ERR;
     } 
     else 
