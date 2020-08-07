@@ -15,6 +15,8 @@ static char *driver_id = NULL;
 char *driver_name = NULL;
 static char *driver_info = NULL;
 static char *device_info = NULL;
+static char *productSN = NULL;
+static char *deviceSN = NULL;
 List *requestid_list;
 natsMutex *requestid_list_mutex;
 List *conn_device_list;
@@ -147,6 +149,53 @@ char * edge_get_device_info(void)
     }
     return device_info;
 }
+
+char * edge_get_productSN(void)
+{
+    if(NULL == productSN)
+    {
+        if(NULL == _get_driver_cfg())
+        {
+            log_write(LOG_ERROR, "_get_driver_cfg fail!");
+            return NULL;
+        }
+        
+        cJSON *productsn_json = cJSON_GetObjectItem(_get_driver_cfg(), "productSN");
+        if(NULL == productsn_json)
+        {
+            log_write(LOG_ERROR, "parse productSN fail!");
+            return NULL;
+        }
+        
+        productSN = productsn_json->valuestring;
+        log_write(LOG_DEBUG, "productSN:%s", productSN);    
+    }
+    return productSN;
+}
+
+char * edge_get_deviceSN(void)
+{
+    if(NULL == deviceSN)
+    {
+        if(NULL == _get_driver_cfg())
+        {
+            log_write(LOG_ERROR, "_get_driver_cfg fail!");
+            return NULL;
+        }
+        
+        cJSON *devicesn_json = cJSON_GetObjectItem(_get_driver_cfg(), "deviceSN");
+        if(NULL == devicesn_json)
+        {
+            log_write(LOG_ERROR, "parse deviceSN fail!");
+            return NULL;
+        }
+        
+        deviceSN = devicesn_json->valuestring;
+        log_write(LOG_DEBUG, "deviceSN:%s", deviceSN);    
+    }
+    return deviceSN;
+}
+
 
 void edge_set_topo_notify_handle(edge_topo_notify_handler          topo_notify_handle)
 {

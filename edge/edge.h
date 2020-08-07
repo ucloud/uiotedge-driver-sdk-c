@@ -41,6 +41,24 @@ char *edge_get_driver_info(void);
 char *edge_get_device_info(void);
 
 /**
+ * @brief 获取网关的产品名称
+ *
+ * @param void:
+ *
+ * @retval : 成功则返回设备列表
+ */
+char * edge_get_productSN(void);
+
+/**
+ * @brief 获取网关的设备名称
+ *
+ * @param void:
+ *
+ * @retval : 成功则返回设备列表
+ */
+char * edge_get_deviceSN(void);
+
+/**
  * @brief 子设备驱动初始化
  *
  * @param void: 
