@@ -150,7 +150,7 @@ char * edge_get_device_info(void)
     return device_info;
 }
 
-char * edge_get_productSN(void)
+char * edge_get_product_sn(void)
 {
     if(NULL == productSN)
     {
@@ -173,7 +173,7 @@ char * edge_get_productSN(void)
     return productSN;
 }
 
-char * edge_get_deviceSN(void)
+char * edge_get_device_sn(void)
 {
     if(NULL == deviceSN)
     {

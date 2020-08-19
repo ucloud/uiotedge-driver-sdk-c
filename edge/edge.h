@@ -45,18 +45,18 @@ char *edge_get_device_info(void);
  *
  * @param void:
  *
- * @retval : 成功则返回设备列表
+ * @retval : 成功则返回产品名称
  */
-char * edge_get_productSN(void);
+char * edge_get_product_sn(void);
 
 /**
  * @brief 获取网关的设备名称
  *
  * @param void:
  *
- * @retval : 成功则返回设备列表
+ * @retval : 成功则返回设备名称
  */
-char * edge_get_deviceSN(void);
+char * edge_get_device_sn(void);
 
 /**
  * @brief 子设备驱动初始化
