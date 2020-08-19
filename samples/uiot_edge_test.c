@@ -68,8 +68,8 @@ int main(int argc, char **argv)
         }
     }
     */
-    log_write(LOG_INFO, "edge_get_productSN: [%s]",edge_get_productSN());
-    log_write(LOG_INFO, "edge_get_deviceSN: [%s]",edge_get_deviceSN());
+    log_write(LOG_INFO, "edge_get_productSN: [%s]",edge_get_product_sn());
+    log_write(LOG_INFO, "edge_get_deviceSN: [%s]",edge_get_device_sn());
 
     dirver_info_cfg = cJSON_Parse(edge_get_driver_info());
     if (!dirver_info_cfg) 
