@@ -32,29 +32,29 @@ typedef void (*edge_subdev_status_handler)(subdev_able opera,char *payload);
 char *edge_get_driver_info(void);
 
 /**
- * @brief 获取设备信息
+ * @brief 获取子设备信息
  *
  * @param void:
  *
- * @retval : 成功则返回设备列表
+ * @retval : 成功则返回子设备信息
  */
 char *edge_get_device_info(void);
 
 /**
- * @brief 获取网关的产品名称
+ * @brief 获取网关的产品序列号
  *
  * @param void:
  *
- * @retval : 成功则返回产品名称
+ * @retval : 成功则返回产品序列号
  */
 char * edge_get_product_sn(void);
 
 /**
- * @brief 获取网关的设备名称
+ * @brief 获取网关的设备序列号
  *
  * @param void:
  *
- * @retval : 成功则返回设备名称
+ * @retval : 成功则返回设备序列号
  */
 char * edge_get_device_sn(void);
 
