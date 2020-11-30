@@ -1,3 +1,4 @@
+include make.settings
 # default compile output
 all :
 	$(MAKE) edge_sdk_c
