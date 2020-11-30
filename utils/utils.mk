@@ -1,3 +1,4 @@
+include ../make.settings
 CFLAGS  = -g -Wall -O2 -lpthread
 
 UTILS_LIB   = libutils.a

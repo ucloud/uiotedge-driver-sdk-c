@@ -1,3 +1,4 @@
+include ../make.settings
 CFLAGS  = -g -Wall -O2 -lpthread
 
 INCLUDE = -I../build/cjson -I../build/nats -I../build/utils -I../build/edge

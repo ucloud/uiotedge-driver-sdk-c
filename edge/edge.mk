@@ -1,3 +1,4 @@
+include ../make.settings
 CFLAGS  = -g -Wall -O2 -D_GNU_SOURCE -std=c99
 
 EDGE_LIB     = libedge.a
