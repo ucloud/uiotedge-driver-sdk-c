@@ -13,7 +13,7 @@ uint32_t _gen_requestid(void)
 
 natsStatus _add_to_list(List * list, void *node, natsMutex *mutex)
 {
-    ListNode *list_node = list_node_new(node);
+    ListNode *list_node = _list_node_new(node);
     if (NULL == list_node) 
     {
         printf("_add_to_list error!\r\n");
@@ -22,7 +22,7 @@ natsStatus _add_to_list(List * list, void *node, natsMutex *mutex)
     else
     {
         natsMutex_Lock(mutex);
-        list_rpush(list, list_node);
+        _list_rpush(list, list_node);
         natsMutex_Unlock(mutex);
         return NATS_OK;
     }
@@ -32,7 +32,7 @@ ListNode * _find_in_list(List * list, void *node, natsMutex *mutex)
 {
     ListNode *list_node;
     natsMutex_Lock(mutex);
-    list_node = list_find(list, node);
+    list_node = _list_find(list, node);
     natsMutex_Unlock(mutex);
     if(NULL != list_node)
     {
@@ -49,7 +49,7 @@ natsStatus _remove_from_list(List * list, void *node, natsMutex *mutex)
     ListNode *list_node;
     natsStatus status;
     natsMutex_Lock(mutex);
-    list_node = list_find(list, node);
+    list_node = _list_find(list, node);
     if (NULL == list_node) 
     {
         printf("_remove_from_list error!\r\n");
@@ -57,7 +57,7 @@ natsStatus _remove_from_list(List * list, void *node, natsMutex *mutex)
     } 
     else 
     {
-        list_remove(list, list_node);
+        _list_remove(list, list_node);
         status = NATS_OK;
     }
     natsMutex_Unlock(mutex);

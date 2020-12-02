@@ -490,14 +490,14 @@ static void _handle_status_sync(int signo)
         ListNode *node = NULL;
         subdev_client *nats_handle = NULL;
 
-        if (NULL == (iter = list_iterator_new(conn_device_list, LIST_TAIL))) 
+        if (NULL == (iter = _list_iterator_new(conn_device_list, LIST_TAIL))) 
         {
             return;
         }
 
         for (;;) 
         {
-            node = list_iterator_next(iter);
+            node = _list_iterator_next(iter);
             if (NULL == node) 
             {
                 break;
@@ -523,7 +523,7 @@ static void _handle_status_sync(int signo)
             log_write(LOG_DEBUG, "device_list_msg:%s",device_list_msg);
         }
         
-        list_iterator_destroy(iter);
+        _list_iterator_destroy(iter);
     }
     natsMutex_Unlock(conn_device_list_mutex);
 
@@ -558,7 +558,7 @@ edge_status edge_common_init(void)
     edge_status status;
     char *nats_server_url = NULL;
     
-    requestid_list = list_new();
+    requestid_list = _list_new();
     if (requestid_list)
     {
         requestid_list->free = _msg_parse_free;
@@ -575,7 +575,7 @@ edge_status edge_common_init(void)
         return EDGE_NO_MEMORY;
     }
     
-    conn_device_list = list_new();
+    conn_device_list = _list_new();
     if (conn_device_list)
     {
         conn_device_list->free = _subdev_client_free;

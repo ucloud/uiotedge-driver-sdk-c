@@ -22,7 +22,7 @@ extern "C" {
  /*
  * 创建List. 失败则返回NULL.
  */
-List *list_new(void)
+List *_list_new(void)
 {
     List *self;
     self = (List *)malloc(sizeof(List));
@@ -40,7 +40,7 @@ List *list_new(void)
 /*
  * 失败List的内存.
  */
-void list_destroy(List *self)
+void _list_destroy(List *self)
 {
     unsigned int len = self->len;
     ListNode *next;
@@ -61,7 +61,7 @@ void list_destroy(List *self)
 /*
  * 将给定节点附加到列表并返回该节点，在失败时返回NULL.
  */
-ListNode *list_rpush(List *self, ListNode *node)
+ListNode *_list_rpush(List *self, ListNode *node)
 {
     if (!node) {
         return NULL;
@@ -84,7 +84,7 @@ ListNode *list_rpush(List *self, ListNode *node)
 /*
  * 弹出列表中的最后一个节点, 失败返回NULL.
  */
-ListNode *list_rpop(List *self)
+ListNode *_list_rpop(List *self)
 {
     ListNode *node = NULL;
     if (!self->len) {
@@ -106,7 +106,7 @@ ListNode *list_rpop(List *self)
 /*
  * 弹出列表中的首个节点, 失败返回NULL.
  */
-ListNode *list_lpop(List *self)
+ListNode *_list_lpop(List *self)
 {
     ListNode *node = NULL;
     if (!self->len) {
@@ -128,7 +128,7 @@ ListNode *list_lpop(List *self)
 /*
  * 预先将给定的节点添加到列表中，并返回该节点，在失败时返回NULL.
  */
-ListNode *list_lpush(List *self, ListNode *node)
+ListNode *_list_lpush(List *self, ListNode *node)
 {
     if (!node) {
         return NULL;
@@ -151,38 +151,38 @@ ListNode *list_lpush(List *self, ListNode *node)
 /*
  * 根据val返回对应的节点，没有则返回NULL.
  */
-ListNode *list_find(List *self, void *val)
+ListNode *_list_find(List *self, void *val)
 {
     ListIterator *it;
     ListNode *node;
 
-    if (NULL == (it = list_iterator_new(self, LIST_HEAD))) {
+    if (NULL == (it = _list_iterator_new(self, LIST_HEAD))) {
         return NULL;
     }
-    node = list_iterator_next(it);
+    node = _list_iterator_next(it);
     while (node) {
         if (self->match) {
             if (self->match(val, node->val)) {
-                list_iterator_destroy(it);
+                _list_iterator_destroy(it);
                 return node;
             }
         } else {
             if (val == node->val) {
-                list_iterator_destroy(it);
+                _list_iterator_destroy(it);
                 return node;
             }
         }
-        node = list_iterator_next(it);
+        node = _list_iterator_next(it);
     }
 
-    list_iterator_destroy(it);
+    _list_iterator_destroy(it);
     return NULL;
 }
 
 /*
  * 根据index返回对应的节点，没有则返回NULL.
  */
-ListNode *list_at(List *self, int index)
+ListNode *_list_at(List *self, int index)
 {
     ListDirection direction = LIST_HEAD;
 
@@ -195,15 +195,15 @@ ListNode *list_at(List *self, int index)
         ListIterator *it;
         ListNode *node;
 
-        if (NULL == (it = list_iterator_new(self, direction))) {
+        if (NULL == (it = _list_iterator_new(self, direction))) {
             return NULL;
         }
-        node = list_iterator_next(it);
+        node = _list_iterator_next(it);
 
         while (index--) {
-            node = list_iterator_next(it);
+            node = _list_iterator_next(it);
         }
-        list_iterator_destroy(it);
+        _list_iterator_destroy(it);
         return node;
     }
 
@@ -213,7 +213,7 @@ ListNode *list_at(List *self, int index)
 /*
  * 从列表中删除给定的节点，释放它和它的值.
  */
-void list_remove(List *self, ListNode *node)
+void _list_remove(List *self, ListNode *node)
 {
     node->prev ? (node->prev->next = node->next) : (self->head = node->next);
 
@@ -230,16 +230,16 @@ void list_remove(List *self, ListNode *node)
 /*
  * 创建一个新的ListIterator，失败返回NULL, 并且设置其ListDirection.
  */
-ListIterator *list_iterator_new(List *list, ListDirection direction)
+ListIterator *_list_iterator_new(List *list, ListDirection direction)
 {
     ListNode *node = direction == LIST_HEAD ? list->head : list->tail;
-    return list_iterator_new_from_node(node, direction);
+    return _list_iterator_new_from_node(node, direction);
 }
 
 /*
  * 创建一个新的ListIterator, 并设置初始节点. 失败则返回NULL.
  */
-ListIterator *list_iterator_new_from_node(ListNode *node, ListDirection direction)
+ListIterator *_list_iterator_new_from_node(ListNode *node, ListDirection direction)
 {
     ListIterator *self;
     self = malloc(sizeof(ListIterator));
@@ -254,7 +254,7 @@ ListIterator *list_iterator_new_from_node(ListNode *node, ListDirection directio
 /*
  * 返回下一个节点, 如果没有更多的节点则返回NULL.
  */
-ListNode *list_iterator_next(ListIterator *self)
+ListNode *_list_iterator_next(ListIterator *self)
 {
     ListNode *curr = self->next;
     if (curr) {
@@ -266,7 +266,7 @@ ListNode *list_iterator_next(ListIterator *self)
 /*
  * 释放列表迭代器.
  */
-void list_iterator_destroy(ListIterator *self)
+void _list_iterator_destroy(ListIterator *self)
 {
     free(self);
     self = NULL;
@@ -275,7 +275,7 @@ void list_iterator_destroy(ListIterator *self)
 /*
  * 根据预设值来创建新节点, 失败则返回NULL.
  */
-ListNode *list_node_new(void *val)
+ListNode *_list_node_new(void *val)
 {
     ListNode *self;
     self = malloc(sizeof(ListNode));
