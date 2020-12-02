@@ -61,35 +61,35 @@ typedef struct {
 
 
 /* 节点. */
-ListNode *list_node_new(void *val);
+ListNode *_list_node_new(void *val);
 
 /* 链表. */
-List *list_new(void);
+List *_list_new(void);
 
-ListNode *list_rpush(List *self, ListNode *node);
+ListNode *_list_rpush(List *self, ListNode *node);
 
-ListNode *list_lpush(List *self, ListNode *node);
+ListNode *_list_lpush(List *self, ListNode *node);
 
-ListNode *list_find(List *self, void *val);
+ListNode *_list_find(List *self, void *val);
 
-ListNode *list_at(List *self, int index);
+ListNode *_list_at(List *self, int index);
 
-ListNode *list_rpop(List *self);
+ListNode *_list_rpop(List *self);
 
-ListNode *list_lpop(List *self);
+ListNode *_list_lpop(List *self);
 
-void list_remove(List *self, ListNode *node);
+void _list_remove(List *self, ListNode *node);
 
-void list_destroy(List *self);
+void _list_destroy(List *self);
 
 /* 迭代器. */
-ListIterator *list_iterator_new(List *list, ListDirection direction);
+ListIterator *_list_iterator_new(List *list, ListDirection direction);
 
-ListIterator *list_iterator_new_from_node(ListNode *node, ListDirection direction);
+ListIterator *_list_iterator_new_from_node(ListNode *node, ListDirection direction);
 
-ListNode *list_iterator_next(ListIterator *self);
+ListNode *_list_iterator_next(ListIterator *self);
 
-void list_iterator_destroy(ListIterator *self);
+void _list_iterator_destroy(ListIterator *self);
 
 #ifdef __cplusplus
 }
