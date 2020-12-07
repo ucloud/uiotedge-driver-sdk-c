@@ -453,7 +453,7 @@ static void _recv_msg_handle(natsConnection *nc, natsSubscription *sub, natsMsg 
     return;
 }
 
-static void _handle_status_sync(int signo)
+static void _handle_status_sync(union sigval v)
 {
     edge_status status;
     char *device_list_msg = (char *)EDGE_MALLOC(NATS_MSG_MAX_LEN);
@@ -542,14 +542,29 @@ static void _handle_status_sync(int signo)
 
 static void _fetch_online_status(void)
 {
-    nats_timer nats_timer;
-    nats_timer.interval_sec = 15;
-    nats_timer.interval_usec = 0;
-    nats_timer.effect_sec = 15;
-    nats_timer.effect_usec = 0;
+    struct sigevent evp;
+    struct itimerspec ts;
+    timer_t timer;
+    int ret;
 
-    natsTimer_Init(&nats_timer, _handle_status_sync);
+    memset(&evp, 0, sizeof(evp));
+    evp.sigev_value.sival_ptr = &timer;        
+    evp.sigev_notify = SIGEV_THREAD;  
+    evp.sigev_notify_function = _handle_status_sync;  
+    evp.sigev_value.sival_int = 0;
+    
+    ret = timer_create(CLOCK_REALTIME, &evp, &timer);
+    if(ret)
+        perror("timer_create");
 
+    ts.it_interval.tv_sec = 15;
+    ts.it_interval.tv_nsec = 0;
+    ts.it_value.tv_sec = 15;
+    ts.it_value.tv_nsec = 0;
+
+    ret = timer_settime(timer, 0, &ts, NULL);
+    if( ret )
+        perror("timer_settime");    
     return;
 }
 
