@@ -1,9 +1,9 @@
 #include "edge.h"
 #include "cJSON.h"
 
-static void edge_normal_msg_handler_user(char *topic, char *payload)
+static void edge_normal_msg_handler_user(char *topic, char *payload, int payloadLen)
 {
-    log_write(LOG_INFO, "topic:%s payload:%s", topic, payload);
+    log_write(LOG_INFO, "topic:%s payload:%s payloadLen:%d", topic, payload, payloadLen);
     return;
 }
 
@@ -179,7 +179,8 @@ int main(int argc, char **argv)
         }
         log_write(LOG_DEBUG, "send message[%s]", time_stamp);
         
-        status = edge_publish(topic_str, time_stamp);
+        status = edge_publishString(topic_str, time_stamp);
+        status |= edge_publish(topic_str, "0D0A2131", 8);
         if(EDGE_OK != status)
         {
             log_write(LOG_ERROR, "edge_publish fail");
