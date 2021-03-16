@@ -120,7 +120,7 @@ void log_print(const char *format,...);
  *
  * @param product_sn:               指定产品序列号
  * @param device_sn:                指定设备序列号
- * @param normal_msg_handle:        接收消息回调处理接口(void (*edge_normal_msg_handler)(char *topic, char *payload)). 
+ * @param normal_msg_handle:        接收消息回调处理接口(void (*edge_normal_msg_handler)(char *topic, char *payload, int payloadLen)). 
  *
  * @retval : 成功则返回句柄，失败返回NULL
  */
