@@ -41,15 +41,28 @@ edge_status edge_common_init(void)
 subdev_client * edge_subdev_construct(const char *product_sn, const char *device_sn, edge_normal_msg_handler normal_msg_handle)
 
 /**
- * @brief 向指定topic发送一条消息
+ * @brief 向指定topic发送一条消息，可以发送二进制消息
  *
  * @param topic:                    topic名称
- * @param str:                      发送消息内容
+ * @param data:                     发送消息内容
+ * @param dataLen:                  发送消息内容长度
  *
  * @retval : 成功则返回EDGE_OK
  */
  
-edge_status edge_publish(const char *topic, const char *str)
+edge_status edge_publish(const char *topic, const char *data, int dataLen)
+
+/**
+ * @brief 向指定topic发送一条字符串消息
+ *
+ * @param topic:                    topic名称
+ * @param str:                      发送字符串消息内容
+ *
+ * @retval : 成功则返回EDGE_OK
+ */
+ 
+edge_status edge_publishString(const char *topic, const char *str)
+
 
 /**
  * @brief 动态注册一个子设备
